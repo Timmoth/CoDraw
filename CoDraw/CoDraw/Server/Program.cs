@@ -1,3 +1,4 @@
+using CoDraw.Server;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
+
+//SignalR
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -31,6 +40,7 @@ app.UseRouting();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapHub<CoDrawHub>("/codrawhub");
 app.MapFallbackToFile("index.html");
 
 app.Run();
