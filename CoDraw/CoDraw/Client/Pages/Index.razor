@@ -2,4 +2,14 @@
 
 <PageTitle>CoDraw</PageTitle>
 
-<BECanvas Width="300" Height="400" @ref="_canvasReference" ></BECanvas>
+<div 
+     @onkeydown="KeyDown"
+     @onkeyup="KeyUp"
+     @onmousemove="MouseMove"
+     @onmousedown="MouseDown"
+     @onmouseup="MouseUp"
+     @onmouseout="MouseOut">
+
+    <BECanvas Width="1000" Height="1000" @ref="_canvasReference"></BECanvas>
+
+</div>
