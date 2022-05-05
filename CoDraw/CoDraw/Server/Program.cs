@@ -1,10 +1,14 @@
+using System.Text.Json;
 using CoDraw.Server;
+using CoDraw.Shared;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddSingleton<UpdateBroadcaster>();
+builder.Services.AddSingleton<CoDrawState>();
 
+// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddResponseCompression(opts =>
@@ -14,7 +18,19 @@ builder.Services.AddResponseCompression(opts =>
 });
 
 //SignalR
-builder.Services.AddSignalR();
+builder.Services
+    .AddSignalR()
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions = new JsonSerializerOptions
+        {
+            Converters =
+            {
+                new CoDrawEventConverter<LineCoDrawEvent>("type"),
+                new CoDrawEventConverter<UserCoDrawEvent>("type")
+            }
+        };
+    });
 
 var app = builder.Build();
 

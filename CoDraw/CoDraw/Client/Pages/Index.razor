@@ -1,16 +1,15 @@
-﻿
-@page "/"
+﻿@page "/"
 
 
 <PageTitle>CoDraw</PageTitle>
 
-<div 
-     @onkeydown="KeyDown"
-     @onkeyup="KeyUp"
-     @onmousemove="MouseMove"
-     @onmousedown="MouseDown"
-     @onmouseup="MouseUp"
-     @onmouseout="MouseOut">
+<div
+    @onkeydown="KeyDown"
+    @onkeyup="KeyUp"
+    @onmousemove="MouseMove"
+    @onmousedown="MouseDown"
+    @onmouseup="MouseUp"
+    @onmouseout="MouseOut">
 
     <BECanvas Width="1000" Height="1000" @ref="_canvasReference"></BECanvas>
 
