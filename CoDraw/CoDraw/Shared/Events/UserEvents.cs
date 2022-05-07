@@ -2,16 +2,19 @@
 
 namespace CoDraw.Shared;
 
-public class LinePointsCoDrawEvent : LineCoDrawEvent, IEquatable<LinePointsCoDrawEvent>
+public class UserEvents : IEquatable<UserEvents>
 {
-    public LinePointsCoDrawEvent(long time, List<Point> points) : base(CoDrawEventType.LinePointsCoDrawEvent, time)
+    public UserEvents(Guid userId, List<UserEvent> events)
     {
-        Points = points;
+        UserId = userId;
+        Events = events;
     }
 
-    [JsonPropertyName("points")] public List<Point> Points { get; }
+    [JsonPropertyName("u")] public Guid UserId { get; set; }
 
-    public bool Equals(LinePointsCoDrawEvent? other)
+    [JsonPropertyName("e")] public List<UserEvent> Events { get; set; }
+
+    public bool Equals(UserEvents? other)
     {
         if (ReferenceEquals(null, other))
         {
@@ -23,7 +26,7 @@ public class LinePointsCoDrawEvent : LineCoDrawEvent, IEquatable<LinePointsCoDra
             return true;
         }
 
-        return Equals(Points, other.Points) || Points.SequenceEqual(other.Points);
+        return UserId.Equals(other.UserId) && (Equals(Events, other.Events) || Events.SequenceEqual(other.Events));
     }
 
     public override bool Equals(object? obj)
@@ -43,11 +46,11 @@ public class LinePointsCoDrawEvent : LineCoDrawEvent, IEquatable<LinePointsCoDra
             return false;
         }
 
-        return Equals((LinePointsCoDrawEvent)obj);
+        return Equals((UserEvents)obj);
     }
 
     public override int GetHashCode()
     {
-        return Points.GetHashCode();
+        return HashCode.Combine(UserId, Events);
     }
 }

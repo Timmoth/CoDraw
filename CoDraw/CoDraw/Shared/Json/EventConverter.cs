@@ -1,19 +1,20 @@
-﻿using System.Text.Json;
+﻿using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace CoDraw.Shared;
 
-public class CoDrawEventConverter<T> : JsonConverter<T>
+public class EventConverter<T, T1> : JsonConverter<T> where T1 : Enum
 {
     private readonly string _discriminator;
     private readonly IEnumerable<Type> _types;
 
-    public CoDrawEventConverter(string discriminator)
+    public EventConverter(string discriminator)
     {
         _discriminator = discriminator;
         var type = typeof(T);
-        _types = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(s => s.GetTypes())
+
+        _types = Assembly.GetAssembly(type).GetTypes()
             .Where(p => type.IsAssignableFrom(p) && !p.IsAbstract && p.IsClass)
             .ToList();
     }
@@ -31,8 +32,8 @@ public class CoDrawEventConverter<T> : JsonConverter<T>
             throw new JsonException();
         }
 
-        var eventType = (CoDrawEventType)typeProperty.GetInt16();
-        var type = _types.FirstOrDefault(x => x.Name == eventType.ToString());
+        var eventType = Enum.GetName(typeof(T1), typeProperty.GetInt16());
+        var type = _types.FirstOrDefault(x => x.Name == eventType);
         if (type == null)
         {
             throw new JsonException();

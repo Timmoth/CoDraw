@@ -1,36 +1,29 @@
-using System.Text.Json;
 using CoDraw.Server;
 using CoDraw.Shared;
-using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<UpdateBroadcaster>();
-builder.Services.AddSingleton<CoDrawState>();
+builder.Services.AddSingleton<IBroadcastTimer, BroadcastTimer>();
+builder.Services.AddApiDependenciesThatWorkInTest();
+builder.Services.AddLogging();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddResponseCompression(opts =>
-{
-    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        new[] { "application/octet-stream" });
-});
+//builder.Services.AddResponseCompression(opts =>
+//{
+//    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+//        new[] { "application/octet-stream" });
+//});
 
 //SignalR
 builder.Services
-    .AddSignalR()
-    .AddJsonProtocol(options =>
+    .AddSignalR(x =>
     {
-        options.PayloadSerializerOptions = new JsonSerializerOptions
-        {
-            Converters =
-            {
-                new CoDrawEventConverter<LineCoDrawEvent>("type"),
-                new CoDrawEventConverter<UserCoDrawEvent>("type")
-            }
-        };
-    });
+        x.EnableDetailedErrors = true;
+        x.MaximumReceiveMessageSize = 10240; // bytes
+    })
+    .AddJsonProtocol(options => { options.PayloadSerializerOptions = JsonExtensions.JsonSerializerOptions; });
 
 var app = builder.Build();
 
@@ -56,7 +49,7 @@ app.UseRouting();
 
 app.MapRazorPages();
 app.MapControllers();
-app.MapHub<CoDrawHub>("/codrawhub");
+app.MapHub<ServerHub>("/codrawhub");
 app.MapFallbackToFile("index.html");
 
 app.Run();

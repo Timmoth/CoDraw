@@ -9,34 +9,19 @@ namespace Tests;
 public class SerializationTest
 {
     [Fact]
-    public void CoDrawLineUpdateEventsSerialization()
+    public void UserEventsEventsSerialization()
     {
         //Given
-        var expected = new CoDrawLineUpdateEvents(Guid.NewGuid(), new Dictionary<Guid, List<LineCoDrawEvent>>
+        var expected = new UserEvents(Guid.NewGuid(), new List<UserEvent>
         {
-            {
-                Guid.NewGuid(), new List<LineCoDrawEvent>
-                {
-                    new LinePointsCoDrawEvent(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), new List<Point>
-                    {
-                        new(1, 2)
-                    })
-                }
-            }
+            new MouseDown(),
+            new MouseMove(new List<float> { 0, 0, 1, 1, 1, 3 }),
+            new MouseUp()
         });
 
-        var jsonSerializerOptions = new JsonSerializerOptions
-        {
-            Converters =
-            {
-                new CoDrawEventConverter<LineCoDrawEvent>("type"),
-                new CoDrawEventConverter<UserCoDrawEvent>("type")
-            }
-        };
-
         //When
-        var json = JsonSerializer.Serialize(expected, jsonSerializerOptions);
-        var actual = JsonSerializer.Deserialize<CoDrawLineUpdateEvents>(json, jsonSerializerOptions);
+        var json = JsonSerializer.Serialize(expected, JsonExtensions.JsonSerializerOptions);
+        var actual = JsonSerializer.Deserialize<UserEvents>(json, JsonExtensions.JsonSerializerOptions);
 
         //Then
         Assert.Equal(expected, actual);
