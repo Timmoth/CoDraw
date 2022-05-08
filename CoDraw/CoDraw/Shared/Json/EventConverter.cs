@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CoDraw.Shared;
+namespace CoDraw.Shared.Json;
 
 public class EventConverter<T, T1> : JsonConverter<T> where T1 : Enum
 {

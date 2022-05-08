@@ -1,5 +1,6 @@
-﻿using System.Text.Json;
-using CoDraw.Shared;
+﻿using CoDraw.Shared;
+using CoDraw.Shared.Events;
+using CoDraw.Shared.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -7,24 +8,27 @@ namespace CoDraw.Client.Pages;
 
 public class ClientHub : IAsyncDisposable
 {
+    private readonly BoardState _state;
     private readonly HubConnection hubConnection;
 
-    public ClientHub(NavigationManager navigationManager)
+    public ClientHub(NavigationManager navigationManager, BoardState state)
     {
+        _state = state;
         hubConnection = new HubConnectionBuilder().AddJsonProtocol(options =>
             {
-                options.PayloadSerializerOptions = new JsonSerializerOptions
-                {
-                    Converters =
-                    {
-                        new EventConverter<UserEvent, UserEventType>("t")
-                    }
-                };
+                options.PayloadSerializerOptions = JsonExtensions.JsonSerializerOptions;
             })
+            .WithAutomaticReconnect()
             .WithUrl(navigationManager.ToAbsoluteUri("/codrawhub"))
             .Build();
 
-        hubConnection.On<List<UserEvents>>("update", ProcessUpdate);
+        hubConnection.On<List<UserEvents>>("Update", ProcessUpdate);
+        hubConnection.Reconnected += HubConnectionOnReconnected;
+    }
+
+    private async Task HubConnectionOnReconnected(string? arg)
+    {
+        await Reload();
     }
 
     public bool IsConnected => hubConnection?.State == HubConnectionState.Connected;
@@ -41,6 +45,17 @@ public class ClientHub : IAsyncDisposable
     public async Task Start()
     {
         await hubConnection.StartAsync();
+        await Reload();
+    }
+
+    private async Task Reload()
+    {
+        _state.Clear();
+        if (IsConnected)
+        {
+            var userEvents = await hubConnection.InvokeCoreAsync<List<UserEvents>>("GetState", new object?[] { });
+            ProcessUpdate(userEvents);
+        }
     }
 
     private void ProcessUpdate(List<UserEvents> update)
@@ -54,7 +69,6 @@ public class ClientHub : IAsyncDisposable
         {
             return;
         }
-
 
         await hubConnection.SendAsync("Send", update);
     }

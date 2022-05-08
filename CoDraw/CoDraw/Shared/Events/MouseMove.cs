@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using Blazor.Extensions.Canvas.Canvas2D;
 
-namespace CoDraw.Shared;
+namespace CoDraw.Shared.Events;
 
 public class MouseMove : UserEvent, IEquatable<MouseMove>
 {
@@ -60,5 +61,40 @@ public class MouseMove : UserEvent, IEquatable<MouseMove>
     public override int GetHashCode()
     {
         return Points.GetHashCode();
+    }
+
+    public override void Apply(UserState state)
+    {
+        var points = GetPoints();
+
+        if (points.Count == 0)
+        {
+            return;
+        }
+
+        state.LastLinePoint = state.Point = points.Last();
+    }
+
+    public override async Task Apply(UserState state, Canvas2DContext context)
+    {
+        var points = GetPoints();
+
+        if (points.Count == 0)
+        {
+            return;
+        }
+
+        if (state.MouseDown)
+        {
+            if (state.LastLinePoint.HasValue)
+            {
+                points.Insert(0, state.LastLinePoint.Value);
+            }
+
+            foreach (var point in points)
+            {
+                await context.LineToAsync(point.X, point.Y);
+            }
+        }
     }
 }

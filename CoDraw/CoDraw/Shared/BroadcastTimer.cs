@@ -4,7 +4,7 @@ public class BroadcastTimer : IBroadcastTimer, IAsyncDisposable
 {
     private readonly Timer _broadcastLoop;
 
-    private readonly TimeSpan BroadcastInterval = TimeSpan.FromMilliseconds(50);
+    private readonly TimeSpan BroadcastInterval = TimeSpan.FromMilliseconds(10);
 
     public BroadcastTimer()
     {

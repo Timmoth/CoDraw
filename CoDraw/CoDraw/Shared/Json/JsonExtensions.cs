@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
+using CoDraw.Shared.Events;
 
-namespace CoDraw.Shared;
+namespace CoDraw.Shared.Json;
 
 public static class JsonExtensions
 {
@@ -9,6 +10,6 @@ public static class JsonExtensions
         Converters =
         {
             new EventConverter<UserEvent, UserEventType>("t")
-        }
+        },
     };
 }

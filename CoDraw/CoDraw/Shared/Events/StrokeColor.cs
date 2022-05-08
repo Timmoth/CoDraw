@@ -1,16 +1,20 @@
-﻿using Blazor.Extensions.Canvas.Canvas2D;
+﻿using System.Text.Json.Serialization;
+using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace CoDraw.Shared.Events;
 
-public class MouseUp : UserEvent, IEquatable<MouseUp>
+public class StrokeColor : UserEvent, IEquatable<StrokeColor>
 {
-    public MouseUp() : base(UserEventType.MouseUp)
+    [JsonPropertyName("color")]
+    public string Color { get; set; }
+    public StrokeColor(string color) : base(UserEventType.StrokeColor)
     {
+        Color = color;
     }
 
-    public bool Equals(MouseUp? other)
+    public bool Equals(StrokeColor? other)
     {
-        return true;
+        return Equals(Color, other.Color);
     }
 
     public override bool Equals(object? obj)
@@ -30,19 +34,16 @@ public class MouseUp : UserEvent, IEquatable<MouseUp>
             return false;
         }
 
-        return Equals((MouseUp)obj);
+        return Equals((StrokeColor)obj);
     }
 
     public override void Apply(UserState state)
     {
-        state.MouseDown = false;
+        state.StrokeColor = Color;
     }
 
     public override async Task Apply(UserState state, Canvas2DContext context)
     {
-        if (state.MouseDown)
-        {
-            await context.StrokeAsync();
-        }
+        await context.SetStrokeStyleAsync(Color);
     }
 }

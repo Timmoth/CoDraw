@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using CoDraw.Client.Pages;
 using CoDraw.Shared;
+using CoDraw.Shared.Events;
+using CoDraw.Shared.Json;
 using Xunit;
 
 namespace Tests;
@@ -12,12 +15,14 @@ public class SerializationTest
     public void UserEventsEventsSerialization()
     {
         //Given
-        var expected = new UserEvents(Guid.NewGuid(), new List<UserEvent>
-        {
-            new MouseDown(),
-            new MouseMove(new List<float> { 0, 0, 1, 1, 1, 3 }),
-            new MouseUp()
-        });
+        var expected = new UserEventBuilder(Guid.NewGuid())
+            .StrokeColor("green")
+            .StrokeThickness(0.5f)
+            .MouseDown(new Point(5, 5))
+            .MouseMove(new Point(10, 10))
+            .MouseMove(new Point(20, 10))
+            .MouseUp()
+            .Build();
 
         //When
         var json = JsonSerializer.Serialize(expected, JsonExtensions.JsonSerializerOptions);

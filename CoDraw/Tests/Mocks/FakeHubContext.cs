@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
 
-namespace Tests;
+namespace Tests.Mocks;
 
 public class FakeHubContext<T> where T : Hub
 {
@@ -23,7 +23,7 @@ public class FakeHubContext<T> where T : Hub
             .Returns<string, object?[], CancellationToken>(
                 (a, b, c) =>
                 {
-                    SignalRSends.Add(new SignalRSend(a, b));
+                    All_ClientRequests.Add(new SignalRClientRequest(a, b));
                     return Task.CompletedTask;
                 });
     }
@@ -35,7 +35,7 @@ public class FakeHubContext<T> where T : Hub
     public IHubContext<T> HubContext => MockHubContext.Object;
     public IHubClients HubClients => MockHubClients.Object;
 
-    public List<SignalRSend> SignalRSends { get; set; } = new();
+    public List<SignalRClientRequest> All_ClientRequests { get; set; } = new();
 
-    public record SignalRSend(string Method, object?[] Arguments);
+    public record SignalRClientRequest(string Method, object?[] Arguments);
 }

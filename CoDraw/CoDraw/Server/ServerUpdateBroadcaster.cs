@@ -23,6 +23,6 @@ public class ServerUpdateBroadcaster : UpdateBroadcaster
             return;
         }
 
-        await _hubContext.Clients.All.SendCoreAsync("update", new[] { update });
+        await _hubContext.Clients.All.SendCoreAsync("Update", new[] { update });
     }
 }

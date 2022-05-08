@@ -15,5 +15,6 @@ builder.Services.AddSingleton<Drawer>();
 builder.Services.AddSingleton<ClientHub>();
 builder.Services.AddSingleton<BoardState>();
 builder.Services.AddSingleton<ClientUpdateBroadcaster>();
+builder.Services.AddSingleton(x => new UserEventBuilder(Guid.NewGuid()));
 
 await builder.Build().RunAsync();

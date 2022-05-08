@@ -1,4 +1,6 @@
-﻿namespace CoDraw.Shared;
+﻿using CoDraw.Shared.Events;
+
+namespace CoDraw.Shared;
 
 public class BoardState
 {
@@ -11,6 +13,12 @@ public class BoardState
     public void Add(UserEvents userEvents)
     {
         NewEvents.Add(userEvents);
+    }
+
+    public void Clear()
+    {
+        Events.Clear();
+        Users.Clear();
     }
 
     public List<UserEvents>? Update()
@@ -33,7 +41,7 @@ public class BoardState
 
             foreach (var userEvent in grouping.Events)
             {
-                userState.Apply(userEvent);
+                userEvent.Apply(userState);
             }
         }
 

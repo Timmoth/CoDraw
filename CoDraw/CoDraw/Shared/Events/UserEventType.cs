@@ -1,8 +1,10 @@
-﻿namespace CoDraw.Shared;
+﻿namespace CoDraw.Shared.Events;
 
 public enum UserEventType
 {
-    MouseDown = 0,
-    MouseMove = 1,
-    MouseUp = 2
+    MouseDown,
+    MouseMove,
+    MouseUp,
+    StrokeColor,
+    StrokeThickness,
 }

@@ -1,5 +1,7 @@
 using CoDraw.Server;
 using CoDraw.Shared;
+using CoDraw.Shared.Json;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +12,11 @@ builder.Services.AddLogging();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-//builder.Services.AddResponseCompression(opts =>
-//{
-//    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-//        new[] { "application/octet-stream" });
-//});
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 
 //SignalR
 builder.Services

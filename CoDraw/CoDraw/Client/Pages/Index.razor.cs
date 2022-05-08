@@ -1,6 +1,7 @@
 ﻿using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
 using CoDraw.Shared;
+using CoDraw.Shared.Events;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -14,6 +15,7 @@ partial class Index : ComponentBase, IAsyncDisposable
     [Inject] public ClientHub CoDrawHub { get; set; }
     [Inject] public BoardState BoardState { get; set; }
     [Inject] public ClientUpdateBroadcaster Updater { get; set; }
+    [Inject] public UserEventBuilder UserEventBuilder { get; set; }
 
     private Canvas2DContext _context;
     protected BECanvasComponent _canvasReference;
@@ -64,12 +66,16 @@ partial class Index : ComponentBase, IAsyncDisposable
 
     public void MouseDown(MouseEventArgs e)
     {
-        Updater.MouseDown();
+        var rand = new Random();
+        var color = rand.NextDouble() > 0.5 ? "green" : "red";
+        UserEventBuilder.StrokeColor(color);
+        UserEventBuilder.StrokeThickness((float)rand.NextDouble() * 5);
+        UserEventBuilder.MouseDown(new Point((float)e.OffsetX, (float)e.OffsetY));
     }
 
     public void MouseUp(MouseEventArgs e)
     {
-        Updater.MouseUp();
+        UserEventBuilder.MouseUp();
     }
 
     public void MouseOut(MouseEventArgs e)
@@ -78,9 +84,7 @@ partial class Index : ComponentBase, IAsyncDisposable
 
     public void MouseMove(MouseEventArgs e)
     {
-        //_ = _context.ArcAsync((float)e.OffsetX, (float)e.OffsetY, 5.0, 0, 360);
-
-        Updater.MouseMove(new Point((float)e.OffsetX, (float)e.OffsetY));
+        UserEventBuilder.MouseMove(new Point((float)e.OffsetX, (float)e.OffsetY));
     }
 
     public void KeyDown(KeyboardEventArgs e)

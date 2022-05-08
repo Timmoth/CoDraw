@@ -2,7 +2,7 @@ using System;
 using CoDraw.Shared;
 using Moq;
 
-namespace Tests;
+namespace Tests.Mocks;
 
 public class FakeBroadcasterTimer
 {
