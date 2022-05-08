@@ -1,16 +1,32 @@
 ﻿@page "/"
 
-
 <PageTitle>CoDraw</PageTitle>
 
-<div
-    @onkeydown="KeyDown"
-    @onkeyup="KeyUp"
-    @onmousemove="MouseMove"
-    @onmousedown="MouseDown"
-    @onmouseup="MouseUp"
-    @onmouseout="MouseOut">
+<div>
+    <EditForm Model="Config">
 
-    <BECanvas Width="1000" Height="1000" @ref="_canvasReference"></BECanvas>
+        <InputNumber @bind-Value="@Config.StrokeThickness"/>
+        <br/>
+        <span>Select Specs</span>
+        <br/>
+        <InputRadioGroup Name="color" TValue="string" @bind-Value="@Config.StrokeColor">
+            <InputRadio Name="color" Value="@("Red")"/>Red<br/>
+            <InputRadio Name="color" Value="@("Black")"/>Black<br/>
+            <InputRadio Name="color" Value="@("Green")"/>Green<br/>
+        </InputRadioGroup>
+    </EditForm>
+</div>
+
+
+<div style="background-color: gray; width: 1000px;"
+     @onkeydown="KeyDown"
+     @onkeyup="KeyUp"
+     @onmousemove="MouseMove"
+     @onmousedown="MouseDown"
+     @onmouseup="MouseUp"
+     @onmouseout="MouseOut">
+    <BECanvas Width="1000" Height="1000" @ref="_canvasReference">
+
+    </BECanvas>
 
 </div>

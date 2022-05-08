@@ -10,6 +10,6 @@ public static class JsonExtensions
         Converters =
         {
             new EventConverter<UserEvent, UserEventType>("t")
-        },
+        }
     };
 }

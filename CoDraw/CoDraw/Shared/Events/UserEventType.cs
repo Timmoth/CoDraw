@@ -6,5 +6,5 @@ public enum UserEventType
     MouseMove,
     MouseUp,
     StrokeColor,
-    StrokeThickness,
+    StrokeThickness
 }

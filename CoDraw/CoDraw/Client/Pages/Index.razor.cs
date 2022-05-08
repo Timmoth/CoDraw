@@ -20,6 +20,8 @@ partial class Index : ComponentBase, IAsyncDisposable
     private Canvas2DContext _context;
     protected BECanvasComponent _canvasReference;
 
+    public BoardConfig Config { get; set; }
+
     #endregion
 
     #region Lifecycle
@@ -36,8 +38,14 @@ partial class Index : ComponentBase, IAsyncDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        Config = new BoardConfig(UserEventBuilder);
         CoDrawHub.OnUpdate += OnUpdate;
         await CoDrawHub.Start();
+
+        if (BoardState.Users.TryGetValue(UserEventBuilder.UserId, out var userState))
+        {
+            Config = BoardConfig.FromUserState(userState, UserEventBuilder);
+        }
     }
 
     private void OnUpdate(object? sender, List<UserEvents> e)
@@ -66,10 +74,6 @@ partial class Index : ComponentBase, IAsyncDisposable
 
     public void MouseDown(MouseEventArgs e)
     {
-        var rand = new Random();
-        var color = rand.NextDouble() > 0.5 ? "green" : "red";
-        UserEventBuilder.StrokeColor(color);
-        UserEventBuilder.StrokeThickness((float)rand.NextDouble() * 5);
         UserEventBuilder.MouseDown(new Point((float)e.OffsetX, (float)e.OffsetY));
     }
 

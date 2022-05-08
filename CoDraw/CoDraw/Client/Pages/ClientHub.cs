@@ -26,11 +26,6 @@ public class ClientHub : IAsyncDisposable
         hubConnection.Reconnected += HubConnectionOnReconnected;
     }
 
-    private async Task HubConnectionOnReconnected(string? arg)
-    {
-        await Reload();
-    }
-
     public bool IsConnected => hubConnection?.State == HubConnectionState.Connected;
     public EventHandler<List<UserEvents>> OnUpdate { get; set; }
 
@@ -40,6 +35,11 @@ public class ClientHub : IAsyncDisposable
         {
             await hubConnection.DisposeAsync();
         }
+    }
+
+    private async Task HubConnectionOnReconnected(string? arg)
+    {
+        await Reload();
     }
 
     public async Task Start()

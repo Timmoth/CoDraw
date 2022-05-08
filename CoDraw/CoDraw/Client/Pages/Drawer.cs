@@ -16,6 +16,7 @@ public class Drawer
     public async Task Draw(Canvas2DContext _context, List<UserEvents> e)
     {
         await _context.BeginBatchAsync();
+        await _context.SetLineCapAsync(LineCap.Round);
 
         foreach (var grouping in e)
         {

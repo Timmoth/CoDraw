@@ -5,17 +5,18 @@ namespace CoDraw.Client.Pages;
 
 public class UserEventBuilder
 {
-    public Guid UserId { get; }
     private readonly float _lineResolution = 1.0f;
-    public UserEvents _userEvents { get; private set; }
     private List<float> mousePositions = new();
-    private Point _lastPosition { get; set; }
 
     public UserEventBuilder(Guid userId)
     {
         UserId = userId;
-        _userEvents = new(UserId, new List<UserEvent>());
+        _userEvents = new UserEvents(UserId, new List<UserEvent>());
     }
+
+    public Guid UserId { get; }
+    public UserEvents _userEvents { get; private set; }
+    private Point _lastPosition { get; set; }
 
     public UserEventBuilder AddMouseMove()
     {
@@ -42,13 +43,14 @@ public class UserEventBuilder
     {
         _userEvents.Events.Add(new MouseDown(point));
         return this;
-    } 
-    
+    }
+
     public UserEventBuilder StrokeColor(string color)
     {
         _userEvents.Events.Add(new StrokeColor(color));
         return this;
-    }    
+    }
+
     public UserEventBuilder StrokeThickness(float thickness)
     {
         _userEvents.Events.Add(new StrokeThickness(thickness));

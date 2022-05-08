@@ -20,7 +20,8 @@ public class SignalRHubTests
     private readonly ITestOutputHelper _output;
 
     private readonly UserEvents userAEvents;
-    private readonly UserEvents userBEvents; 
+    private readonly UserEvents userBEvents;
+
     public SignalRHubTests(ITestOutputHelper output)
     {
         _output = output;
@@ -38,7 +39,6 @@ public class SignalRHubTests
             .StrokeColor("green")
             .StrokeThickness(0.5f)
             .Build();
-
     }
 
     [Fact]

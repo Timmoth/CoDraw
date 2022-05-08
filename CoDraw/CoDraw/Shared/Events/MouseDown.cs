@@ -5,12 +5,12 @@ namespace CoDraw.Shared.Events;
 
 public class MouseDown : UserEvent, IEquatable<MouseDown>
 {
-    [JsonPropertyName("p")]
-    public Point Point { get; set; }
     public MouseDown(Point point) : base(UserEventType.MouseDown)
     {
         Point = point;
     }
+
+    [JsonPropertyName("p")] public Point Point { get; set; }
 
     public bool Equals(MouseDown? other)
     {

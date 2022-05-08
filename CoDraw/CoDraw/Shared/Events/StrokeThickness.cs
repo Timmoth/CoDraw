@@ -5,12 +5,12 @@ namespace CoDraw.Shared.Events;
 
 public class StrokeThickness : UserEvent, IEquatable<StrokeThickness>
 {
-    [JsonPropertyName("thickness")]
-    public float Thickness { get; set; }
     public StrokeThickness(float thickness) : base(UserEventType.StrokeThickness)
     {
         Thickness = thickness;
     }
+
+    [JsonPropertyName("thickness")] public float Thickness { get; set; }
 
     public bool Equals(StrokeThickness? other)
     {

@@ -5,12 +5,12 @@ namespace CoDraw.Shared.Events;
 
 public class StrokeColor : UserEvent, IEquatable<StrokeColor>
 {
-    [JsonPropertyName("color")]
-    public string Color { get; set; }
     public StrokeColor(string color) : base(UserEventType.StrokeColor)
     {
         Color = color;
     }
+
+    [JsonPropertyName("color")] public string Color { get; set; }
 
     public bool Equals(StrokeColor? other)
     {
